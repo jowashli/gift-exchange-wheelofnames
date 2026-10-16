@@ -1,2 +1,2 @@
 # gift-exchange-wheelofnames
-Selective randomnessSr -> Sr / Jr -> Jr
+wheelofnames with selective randomness

@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://buxht4tottu26"]
+
+[ext_resource type="Script" uid="uid://bip2fnvkve56v" path="res://scripts/Wheelofnames.gd" id="1_yhqkm"]
+
+[node name="Wheelofnames" type="Node2D" unique_id=788739836]
+script = ExtResource("1_yhqkm")
