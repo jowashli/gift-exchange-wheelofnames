@@ -6,6 +6,10 @@
 
 [node name="Wheel" type="Node2D" parent="." unique_id=457530734]
 script = ExtResource("1_yhqkm")
+wheel_names_string = "one
+two
+three
+noot noot"
 
 [node name="Label" type="Label" parent="Wheel" unique_id=1026194741]
 offset_right = 40.0

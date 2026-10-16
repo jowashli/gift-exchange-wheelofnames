@@ -1,23 +1,28 @@
 extends Node2D
 
-@export var wheel_sector_count : int = 7
 @export var wheel_radius : float = 400.0
 @export var wheel_colors : PackedColorArray = PackedColorArray([Color.DIM_GRAY, Color.WEB_GRAY, Color.DARK_GRAY, Color.LIGHT_GRAY])
+@export_multiline() var wheel_names_string : String = "item1\nitem2\nitem3"
+var wheel_names : PackedStringArray
+var wheel_sector_count : int = len(wheel_names)
 
 func _ready() -> void:
+	wheel_names = PackedStringArray(wheel_names_string.split("\n"))
+	wheel_sector_count = len(wheel_names)
+	print(wheel_names)
 	position = get_viewport_rect().size / 2
-	create_wheel_labels(Vector2.ZERO, wheel_radius, wheel_sector_count, 0.0)
+	create_wheel_labels(Vector2.ZERO, wheel_radius, wheel_sector_count, 0.0, wheel_names)
 
 func _process(_delta: float) -> void:
 	queue_redraw()
 
-func create_wheel_labels (offset_position: Vector2, radius: float, sector_count: int, rotation_offset: float) -> void:
+func create_wheel_labels (offset_position: Vector2, radius: float, sector_count: int, rotation_offset: float, names: PackedStringArray) -> void:
 	var wheel_labels : Array[Label] = []
 	var sector_radians : float = (2.0 * PI) / sector_count
 	const WHEEL_PADDING : int = 20
 	for i in range(sector_count):
 		var new_label : Label = Label.new()
-		new_label.text = str(i) + " this wheel sector has some text on it"
+		new_label.text = names[i]
 		new_label.rotation = sector_radians * (i+0.5) + PI * 1.5
 		new_label.position = offset_position + Vector2.UP.rotated(sector_radians * (i+0.5) + rotation_offset) * radius # sector edge 
 		new_label.position += Vector2.UP.rotated(new_label.rotation) * new_label.size.y/2. # height offset
