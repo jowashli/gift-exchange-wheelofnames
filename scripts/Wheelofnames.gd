@@ -6,6 +6,10 @@ extends Node2D
 var wheel_names : PackedStringArray
 var wheel_sector_count : int = len(wheel_names)
 
+const CENTER_CIRCLE_RADIUS : float = 50.0
+const CENTER_CIRCLE_COLOR : Color = Color.WHITE
+const WHEEL_PADDING : int = 20
+
 func _ready() -> void:
 	wheel_names = PackedStringArray(wheel_names_string.split("\n"))
 	wheel_sector_count = len(wheel_names)
@@ -19,7 +23,6 @@ func _process(_delta: float) -> void:
 func create_wheel_labels (offset_position: Vector2, radius: float, sector_count: int, rotation_offset: float, names: PackedStringArray) -> void:
 	var wheel_labels : Array[Label] = []
 	var sector_radians : float = (2.0 * PI) / sector_count
-	const WHEEL_PADDING : int = 20
 	for i in range(sector_count):
 		var new_label : Label = Label.new()
 		new_label.text = names[i]
@@ -51,3 +54,4 @@ func draw_wheel(sector_count: int, radius: float, rotation_offset: float, colors
 	var sector_polygons : Array[PackedVector2Array] = generate_circle_sectors(Vector2.ZERO, radius, sector_count, rotation_offset)
 	for i in range(sector_count):
 		draw_polygon(sector_polygons[i], PackedColorArray([colors[wrap(i, 0, len(colors))]]))
+	draw_circle(Vector2.ZERO, CENTER_CIRCLE_RADIUS, CENTER_CIRCLE_COLOR)
