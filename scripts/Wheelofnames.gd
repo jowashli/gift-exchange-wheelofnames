@@ -1,36 +1,32 @@
 extends Node2D
 
-var rotation_offset_degrees : float = 0
-
-func get_screen_midpoint() -> Vector2:
+func get_viewport_midpoint() -> Vector2:
 	return get_viewport_rect().size / 2
 
 func _process(delta: float) -> void:
 	queue_redraw()
-	rotation_offset_degrees += 0.2
 
-func generate_circle_slices(position: Vector2, radius: float, slice_count: int) -> Array[PackedVector2Array]:
-	var slices : Array[PackedVector2Array] = []
-	var slice_degree : float = 360. / slice_count
+func generate_circle_sectors(position: Vector2, radius: float, sector_count: int, rotation_offset: float) -> Array[PackedVector2Array]:
+	var sector_polygons : Array[PackedVector2Array] = []
+	var sector_radians : float = (2.0 * PI) / sector_count
 	
-	for i in slice_count:
-		var slice : PackedVector2Array = PackedVector2Array([
+	for i in sector_count:
+		sector_polygons.append(PackedVector2Array([
 			position,
-			position + Vector2.UP.rotated(deg_to_rad(slice_degree * i + rotation_offset_degrees)) * radius,
-			position + Vector2.UP.rotated(deg_to_rad(slice_degree * (i + 1) + rotation_offset_degrees)) * radius
-		])
-		slices.append(slice)
+			position + Vector2.UP.rotated(sector_radians * i + rotation_offset) * radius,
+			position + Vector2.UP.rotated(sector_radians * (i+1) + rotation_offset) * radius
+		]))
 	
-	return slices
+	return sector_polygons
+
+func draw_wheel(sector_count: int, radius: float, rotation_offset: float, colors: PackedColorArray) -> void:
+	var sector_polygons : Array[PackedVector2Array] = generate_circle_sectors(get_viewport_midpoint(), radius, sector_count, rotation_offset)
+	for i in range(sector_count):
+		draw_polygon(sector_polygons[i], PackedColorArray([colors[wrap(i, 0, len(colors))]]))
+
+var wheel_rotation : float = 0.0
 
 func _draw() -> void:
-	const slice_count : int = 20
-	var colors_base : PackedColorArray = PackedColorArray([Color.RED, Color.BLUE])
-	var colors : PackedColorArray = PackedColorArray([])
-	for i in range (slice_count / len(colors_base)):
-		colors += colors_base
-	
-	var slices = generate_circle_slices(get_screen_midpoint(), 200., slice_count)
-	for i in range(slice_count):
-		var slice : PackedVector2Array = slices[i]
-		draw_polygon(slice, PackedColorArray([colors[i]]))
+	wheel_rotation += PI/360.0
+	var colors_rainbow : PackedColorArray = PackedColorArray([Color.RED, Color.ORANGE, Color.YELLOW, Color.GREEN, Color.BLUE, Color.INDIGO, Color.VIOLET])
+	draw_wheel(3, 200.0, wheel_rotation, colors_rainbow)
